@@ -12,12 +12,6 @@
 
 *************************************** Evening Stand-Up****************************************************
                                          ^^^^^^^^^^Week-3 Day-4^^^^^^^^^^^^^^^^^
-                                Today I've learned
-                                How to install the node js using nvm. Through NVM we can install the any version of node whenever we need, Becuase some projects don't support the current version.
-                                Second I've learned hoe to create the react app using cmd terminal and how to install 
-                                the react-router-dom library.
-                                Then I've used the props how to pass the data from one component to another then I've learned we can pass the arary and object as initial value of the state,
-                                Then I learned how I can show the useref hook and how to pass the ref into our html code.
-                                How I can Add the todos, check them as mark and remanibg unmarked todo should show in below in the form of number the I applied the toggleing function for this purpose. 
-                                At the end I use clear button to clear all todos.
+                   
+Today, I learned how to install Node.js using NVM, allowing me to easily switch between different Node.js versions for project compatibility. I also learned how to create a React app using the command-line terminal and install the "react-router-dom" library for routing. I explored passing data between components using props, including arrays and objects as initial state values. Additionally, I discovered how to use the useRef hook to access HTML elements in my code. I implemented adding todos, marking them as complete, and displaying the remaining number of unmarked todos. Finally, I added a clear button to remove all todos.
                                 
