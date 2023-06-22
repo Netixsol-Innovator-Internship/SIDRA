@@ -1,208 +1,173 @@
-import React,{useState,useEffect} from 'react'
-import axios from 'axios';
-export const TodoList = ({  newListItems, checkboxChecked }) => {
-    const [data, setdata] = useState('');
-    const [res, setres] = useState('');
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { v4 as id } from 'uuid';
 
-    const [todos, settodos] = useState();
-    function toggleTextDecoration(index) {
-        const checkbox = document.getElementById(`checkbox${index}`);
-        const label = document.querySelector(`label[for="checkbox${index}"]`);
-      
-        if (checkbox.checked) {
-          label.style.textDecoration = 'line-through';
-          label.style.color = 'purple';
-        } else {
-          label.style.textDecoration = 'none';
-        }
+export const TodoList = ({ newListItems, checkboxChecked }) => {
+  const [res, setres] = useState([]);
+  const [deletedItems, setDeletedItems] = useState([]);
+  let options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  let today = new Date();
+  let day = today.toLocaleDateString("en-US", options);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/")
+      console.log(response)
+      setres(response.data);
+    } catch (error) {
+      console.error(error, "you are wrong");
+    }
+  };
+
+  useEffect(() => {
+    fetchData(); // Fetch data when the component mounts
+  }, []);
+
+  const MyComponent = () => {
+    const [inputValue, setInputValue] = useState("");
+
+    const handleInputChange = (event) => {
+      setInputValue(event.target.value);
+    };
+
+    const handleSubmit = async (event) => {
+      event.preventDefault(); // Prevent form submission
+      console.log(inputValue);
+
+      try {
+        console.log("sdsfgghfjfhjkgk", inputValue);
+
+        const response = await axios.post("http://localhost:5000/", {
+          newItems: inputValue, 
+          id : id()
+        
+        });
+        const dataValues = response.data;
+        console.log("responsDATA", response.data);
+        setres(response.data);
+
+        // Log the response from the server
+      } catch (error) {
+        console.error(error, "An error occurred while posting data");
       }
+    };
 
-      const fetchData = async () => {
-        try {
-          const response = await axios.get('http://localhost:5000/');
-          const data = response.data;
-          // Process the data received from the server
-          console.log('ssss',data); 
-          // Example: log the received data
-        //   setDay(data.day);
-        //   console.log(day,'one')
-        //   settodos(data.newItems)
-        //   console.log(todos,'two')
-        setres(data)
-                  console.log(res.day,"sdfdhjg")
-                  console.log(res.newItems,"")
+    const handleDelete = async (itemId) => {
+      console.log(itemId.id);
+      try {
+        const response = await axios.delete(`http://localhost:5000/items/${itemId.id}`);
+        setres(response.data)
+        console.log(response)
+      } catch (error) {
+        console.error(error, "An error occurred while deleting the item");
+      }
+    };
 
+    return (
+      <>
+        <div style={{ marginTop: "25px" }}>
+          <h1
+            style={{
+              backgroundColor: "blueviolet",
+              textAlign: "center",
+              width: "50%",
+              margin: "0 auto",
+              borderRadius: "5px",
+              paddingTop: "25px",
+              paddingBottom: "25px",
+              color: "black",
+            }}
+          >
+            {day}
+          </h1>
 
-        } catch (error) {
-          console.error(error,'you are wrong');
-        }
-      };
-
-
-
-      useEffect(() => {
-        fetchData(); // Fetch data when the component mounts
-      }, []);
-
-   
-      const MyComponent = () => {
-        const [inputValue, setInputValue] = useState('');
-      
-    
-        const handleInputChange = (event) => {
-          setInputValue(event.target.value);
-        };
-    
-        const handleSubmit = async (event) => {
-            event.preventDefault(); // Prevent form submission
-            console.log(inputValue);
-          
-            try {
-                console.log("sdsfgghfjfhjkgk",inputValue);
-
-              const response = await axios.post('http://localhost:5000/', { newItems:inputValue });
-              const dataValues = response.data;
-              console.log("responsDATA",dataValues)
-              setdata(dataValues)
-
-                 // Log the response from the server
-            } catch (error) {
-              console.error(error, 'An error occurred while posting data');
-            }
-          };
-
-       
-  
-  return (
-  <>
- 
-  <div style={{marginTop: '25px'}}>
-    <h1
-      style={{
-        backgroundColor: 'blueviolet',
-        textAlign: 'center',
-        width: '50%',
-        margin: '0 auto',
-        borderRadius: '5px',
-        paddingTop: '25px',
-        paddingBottom : '25px',
-        color: 'black',
-        
-      }}
-    >
-      {res.day} 
-    </h1>
-
-    <div
-      className="main"
-      style={{
-        borderRadius: '5px',
-        backgroundColor: 'white',
-        width: '50%',
-        margin: '0 auto',
-        marginTop: '50px',
-        paddingTop: '25px',
-        paddingBottom: '15px'
-        
-      }}
-    >
-
-<ul>
-  {/* {data.map((item, index) => (
-    <li key={index} style={{ marginTop: '25px', listStyle: 'none' }}>
-      <input
-        type="checkbox"
-        id={`checkbox${index}`}
-        style={{ marginRight: '15px' }}
-        onChange={() => toggleTextDecoration(index)}
-      />
-      <label
-        htmlFor={`checkbox${index}`}
-        style={{
-          textDecoration: checkboxChecked[index] ? 'line-through' : 'none',
-        }}
-      >
-        {item}
-      </label>
-    </li>
-  ))} */}
-</ul>
-
-         
-       {
-        <ul>
+          <div
+            className="main"
+            style={{
+              borderRadius: "5px",
+              backgroundColor: "white",
+              width: "50%",
+              margin: "0 auto",
+              marginTop: "50px",
+              paddingTop: "25px",
+              paddingBottom: "15px",
+            }}
+          >
             {
-                data.map((todo)=>{
-                    return(
-                        <li>{todo}</li>
-                    )
+              <ul>
+                {res.map((value, index) => {
+                  return (
+                    <li
+                      key={index}
+                      style={{
+                        marginTop: "25px",
+                        listStyle: "none",
+                        textDecoration: value.checked ? "line-through" : "none",
+                        fontSize: value.checked ? "18px" : "inherit",
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        style={{ marginRight: "15px" }}
+                        checked={value.checked}
+                      ></input>
+                      {value.newItems}
 
-                })
+
+                     
+        <button onClick={() => handleDelete(value)}>Delete</button>
+                    </li>
+                  );
+                })}
+              </ul>
             }
-        {/* {
-           newListItems.map((item, index) => (
-          <li key={index} style={{ marginTop: '25px', listStyle: 'none' }}>
-            <input
-              type="checkbox"
-              id={`checkbox${index}`}
-              style={{ marginRight: '15px' }}
-              onChange={() => toggleTextDecoration(index)}
-            />
-            <label
-              htmlFor={`checkbox${index}`}
+
+            <form
+              onSubmit={handleSubmit}
+              action="/"
+              method="post"
               style={{
-                textDecoration: checkboxChecked[index] ? 'line-through' : 'none',
+                marginTop: "35px",
+                display: "flex",
+                justifyContent: "center",
               }}
             >
-              {item}
-            </label>
-          </li>
-        ))} */}
-      </ul>
-       }  
+              <input
+                type="text"
+                name="newItem"
+                autoComplete="off"
+                placeholder="New Item"
+                onChange={handleInputChange}
+                value={inputValue}
+                style={{ border: 0 }}
+              />
+              
+  {/* <button onClick={() => handleDelete(value.id)}>Delete</button> */}
 
-      <form
-      onSubmit={handleSubmit}
-        action="/"
-        method="post"
-        style={{
-          marginTop: '35px',
-          display: 'flex',
-          justifyContent: 'space-evenly',
-        }}
-      >
-        <input
-          type="text"
-          name="newItem"
-          autoComplete="off"
-          placeholder="New Item"
-          onChange={handleInputChange}
-         value={inputValue}
-          style={{ border: 0 }}
-        />
-        <button
-          type="submit"
-          style={{
-            backgroundColor: 'blueviolet',
-            outline: 'none',
-            border: 0,
-            fontSize: '30px',
-            color: 'white',
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
-          }}
-        >
-          +
-        </button>
-      </form>
-     
-    </div>
-  </div>
-
-  </>
-   
-  )
-};
-return <MyComponent />;
+              <button
+                type="submit"
+                style={{
+                  backgroundColor: "blueviolet",
+                  outline: "none",
+                  border: 0,
+                  fontSize: "30px",
+                  color: "white",
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "50%",
+                }}
+              >
+                +
+              </button>
+            </form>
+          </div>
+        </div>
+      </>
+    );
+  };
+  return <MyComponent />;
 };
